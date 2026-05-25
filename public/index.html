@@ -10,76 +10,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #121212; /* Fundo escuro premium */
-            color: #ffffff;
-        }
-        .app-container {
-            max-width: 450px;
-            margin: 40px auto;
-        }
-        .glass-card {
-            background: #1e1e1e;
-            border-radius: 20px;
-            border: 1px solid #333;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .text-accent {
-            color: #e0a800; /* Destaque dourado/âmbar */
-        }
-        .btn-custom {
-            background-color: #2c2c2c;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        .btn-custom:hover {
-            background-color: #e0a800;
-            color: #000;
-            border-color: #e0a800;
-            transform: translateY(-2px);
-        }
-        .btn-action {
-            background-color: #e0a800;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(224, 168, 0, 0.3);
-        }
-        .btn-action:hover {
-            background-color: #c69500;
-            transform: translateY(-2px);
-        }
-        .form-control {
-            background-color: #2c2c2c;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 10px;
-        }
-        .form-control:focus {
-            background-color: #2c2c2c;
-            color: #fff;
-            border-color: #e0a800;
-            box-shadow: none;
-        }
-        .horario-btn {
-            border-radius: 10px;
-            background-color: #198754;
-            color: white;
-            border: none;
-            transition: all 0.2s;
-        }
-        .horario-btn:hover {
-            background-color: #146c43;
-            transform: scale(1.05);
-        }
-        #img-qrcode {
-            border-radius: 15px;
-            background: white; /* Mantém o fundo do QR branco para o celular conseguir ler */
-        }
-    </style>
+    /* 1. Regra Global para garantir que NADA fique preto */
+    * {
+        color: #ffffff !important; 
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #121212;
+        color: #ffffff !important;
+    }
+
+    /* 2. Ajuste nos seus cards */
+    .glass-card {
+        background: #1e1e1e;
+        border-radius: 20px;
+        border: 1px solid #333;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        color: #ffffff !important; /* Força cor branca */
+    }
+
+    /* 3. Ajuste nos botões (garantindo que o texto não seja preto por padrão) */
+    .btn-custom {
+        background-color: #2c2c2c;
+        color: #ffffff !important; /* Branco */
+        border: 1px solid #444;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    /* Quando passar o mouse, o texto fica preto apenas no botão dourado */
+    .btn-custom:hover {
+        background-color: #e0a800;
+        color: #000000 !important; 
+        border-color: #e0a800;
+        transform: translateY(-2px);
+    }
+
+    /* 4. Ajuste no campo de texto */
+    .form-control {
+        background-color: #2c2c2c;
+        border: 1px solid #444;
+        color: #ffffff !important; /* Texto branco dentro do input */
+    }
+
+    /* 5. Ajuste nos botões de horário */
+    .horario-btn {
+        border-radius: 10px;
+        background-color: #198754;
+        color: #ffffff !important; /* Branco */
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .text-accent {
+        color: #e0a800 !important;
+    }
+</style>
 </head>
 <body>
 
