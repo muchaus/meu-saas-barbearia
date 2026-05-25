@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Premium Control</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+            padding: 15px 0;
+        }
+        .text-accent { color: #e0a800; }
+        
+        /* CORREÇÃO: Trocando a cor padrão do .text-muted para um cinza claro legível no escuro */
+        .text-muted { color: #d1d1d1 !important; }
+
+        .glass-card {
+            background: #1e1e1e;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        /* Tabela branca/clara no fundo escuro */
+        .table { color: #fff; margin-bottom: 0; }
+        .table thead th {
+            background-color: #2c2c2c;
+            color: #e0a800;
+            border-bottom: 2px solid #333;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        .table tbody td {
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+            padding: 15px;
+            vertical-align: middle;
+            color: #fff; /* Explicitamente branco */
+        }
+        .badge-pending { background-color: #ffd700; color: #000; }
+        .badge-paid { background-color: #198754; color: #fff; }
+        
+        .btn-confirm {
+            background-color: #e0a800;
+            color: #000;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 5px 15px;
+            font-size: 0.85rem;
+        }
+        .btn-confirm:hover { background-color: #c69500; }
+        
+        .whatsapp-link {
+            color: #25d366;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .whatsapp-link:hover { color: #128c7e; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand fw-bold fs-4">
+            <i class="bi bi-scissors text-accent me-2"></i>Admin<span class="text-accent">Control</span>
+        </span>
+        <div class="text-end">
+            <span class="text-muted small">Barbearia Teste</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card stat-card">
+                <i class="bi bi-calendar-event text-accent fs-3 mb-2"></i>
+                <div class="text-muted small">Total Agendados</div>
+                <h3 id="stat-total" class="fw-bold">0</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card stat-card">
+                <i class="bi bi-clock-history text-warning fs-3 mb-2"></i>
+                <div class="text-muted small">Pendentes</div>
+                <h3 id="stat-pendentes" class="fw-bold">0</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card stat-card">
+                <i class="bi bi-cash-stack text-success fs-3 mb-2"></i>
+                <div class="text-muted small">Confirmados</div>
+                <h3 id="stat-pagos" class="fw-bold">0</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card overflow-hidden">
+        <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">Esteira de Atendimento</h5>
+            <button class="btn btn-sm btn-outline-light" onclick="carregarDashboard()">
+                <i class="bi bi-arrow-clockwise"></i> Atualizar
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Data / Hora</th>
+                        <th>Cliente</th>
+                        <th>Contato</th>
+                        <th>Status</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-agendamentos">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const idSalaoAdmin = 1;
+
+    async function carregarDashboard() {
+        const corpoTabela = document.getElementById('tabela-agendamentos');
+        
+        try {
+            const resposta = await fetch(`http://127.0.0.1:8000/admin/agendamentos/${idSalaoAdmin}`);
+            const dados = await resposta.json();
+            
+            corpoTabela.innerHTML = ""; 
+            
+            let pendentes = 0;
+            let pagos = 0;
+
+            if (dados.agendamentos.length === 0) {
+                // Mensagem de tabela vazia agora legível
+                corpoTabela.innerHTML = "<tr><td colspan='5' class='text-center text-muted p-5'>Nenhum agendamento encontrado na base de dados.</td></tr>";
+                atualizarStats(0, 0, 0);
+                return;
+            }
+
+            dados.agendamentos.forEach(agendamento => {
+                if(agendamento.status === "Pendente") pendentes++;
+                else pagos++;
+
+                const linha = document.createElement('tr');
+                
+                const partes = agendamento.data_hora.split(" ");
+                const dataFormatada = partes[0].split("-").reverse().join("/");
+                const dataVisual = `${dataFormatada} às ${partes[1]}`;
+
+                let badgeClass = agendamento.status === "Pendente" ? "badge-pending" : "badge-paid";
+                let iconStatus = agendamento.status === "Pendente" ? "bi-hourglass-split" : "bi-check-all";
+                
+                let acaoHtml = agendamento.status === "Pendente" 
+                    ? `<button class="btn btn-confirm" onclick="mudarStatusPago(${agendamento.id})"><i class="bi bi-cash"></i> Confirmar</button>`
+                    : `<span class="text-success small"><i class="bi bi-check-lg"></i> Pago</span>`;
+
+                linha.innerHTML = `
+                    <td class="fw-bold text-white">${dataVisual}</td>
+                    <td class="text-white">${agendamento.nome_cliente}</td>
+                    <td>
+                        <a href="https://wa.me/55${agendamento.whatsapp_cliente}" target="_blank" class="whatsapp-link">
+                            <i class="bi bi-whatsapp"></i> ${agendamento.whatsapp_cliente}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="badge ${badgeClass} rounded-pill px-3 py-2">
+                            <i class="bi ${iconStatus} me-1"></i> ${agendamento.status}
+                        </span>
+                    </td>
+                    <td class="text-center">${acaoHtml}</td>
+                `;
+                
+                corpoTabela.appendChild(linha);
+            });
+
+            atualizarStats(dados.agendamentos.length, pendentes, pagos);
+
+        } catch (erro) {
+            console.error(erro);
+            corpoTabela.innerHTML = "<tr><td colspan='5' class='text-center text-danger p-5'>Falha operacional ao conectar com o servidor local.</td></tr>";
+        }
+    }
+
+    function atualizarStats(total, pendentes, pagos) {
+        document.getElementById('stat-total').innerText = total;
+        document.getElementById('stat-pendentes').innerText = pendentes;
+        document.getElementById('stat-pagos').innerText = pagos;
+    }
+
+    async function mudarStatusPago(idAgendamento) {
+        if(!confirm("Confirmar recebimento do pagamento manual e baixar agendamento?")) return;
+
+        try {
+            const resposta = await fetch(`http://127.0.0.1:8000/admin/agendamentos/${idAgendamento}/pago`, {
+                method: 'PUT'
+            });
+            const dados = await resposta.json();
+            if(dados.sucesso) carregarDashboard();
+        } catch (erro) {
+            alert("Erro técnico ao tentar atualizar o status.");
+        }
+    }
+
+    // Inicializa a tela consumindo a API
+    carregarDashboard();
+</script>
+
+</body>
+</html>
