@@ -10,9 +10,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-    /* 1. Regra Global para garantir que NADA fique preto */
+    /* 1. Força TUDO para branco, sem exceção */
     * {
-        color: #ffffff !important; 
+        color: #ffffff !important;
+    }
+
+    /* 2. Remove o desbotado do Bootstrap */
+    .text-muted {
+        color: #ffffff !important;
+        opacity: 0.9;
     }
 
     body {
@@ -21,48 +27,22 @@
         color: #ffffff !important;
     }
 
-    /* 2. Ajuste nos seus cards */
+    /* 3. Ajuste nos seus cards */
     .glass-card {
         background: #1e1e1e;
         border-radius: 20px;
         border: 1px solid #333;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        color: #ffffff !important; /* Força cor branca */
     }
 
-    /* 3. Ajuste nos botões (garantindo que o texto não seja preto por padrão) */
-    .btn-custom {
-        background-color: #2c2c2c;
-        color: #ffffff !important; /* Branco */
-        border: 1px solid #444;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-    
-    /* Quando passar o mouse, o texto fica preto apenas no botão dourado */
-    .btn-custom:hover {
-        background-color: #e0a800;
-        color: #000000 !important; 
-        border-color: #e0a800;
-        transform: translateY(-2px);
-    }
-
-    /* 4. Ajuste no campo de texto */
+    /* 4. Ajuste dos inputs */
     .form-control {
-        background-color: #2c2c2c;
-        border: 1px solid #444;
-        color: #ffffff !important; /* Texto branco dentro do input */
+        background-color: #2c2c2c !important;
+        border: 1px solid #444 !important;
+        color: #ffffff !important;
     }
 
-    /* 5. Ajuste nos botões de horário */
-    .horario-btn {
-        border-radius: 10px;
-        background-color: #198754;
-        color: #ffffff !important; /* Branco */
-        border: none;
-        transition: all 0.2s;
-    }
-
+    /* 5. Ícones e Destaques */
     .text-accent {
         color: #e0a800 !important;
     }
