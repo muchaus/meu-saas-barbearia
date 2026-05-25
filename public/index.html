@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Premium</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212; /* Fundo escuro premium */
+            color: #ffffff;
+        }
+        .app-container {
+            max-width: 450px;
+            margin: 40px auto;
+        }
+        .glass-card {
+            background: #1e1e1e;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .text-accent {
+            color: #e0a800; /* Destaque dourado/âmbar */
+        }
+        .btn-custom {
+            background-color: #2c2c2c;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #e0a800;
+            color: #000;
+            border-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        .btn-action {
+            background-color: #e0a800;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(224, 168, 0, 0.3);
+        }
+        .btn-action:hover {
+            background-color: #c69500;
+            transform: translateY(-2px);
+        }
+        .form-control {
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 10px;
+        }
+        .form-control:focus {
+            background-color: #2c2c2c;
+            color: #fff;
+            border-color: #e0a800;
+            box-shadow: none;
+        }
+        .horario-btn {
+            border-radius: 10px;
+            background-color: #198754;
+            color: white;
+            border: none;
+            transition: all 0.2s;
+        }
+        .horario-btn:hover {
+            background-color: #146c43;
+            transform: scale(1.05);
+        }
+        #img-qrcode {
+            border-radius: 15px;
+            background: white; /* Mantém o fundo do QR branco para o celular conseguir ler */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container app-container">
+    <div class="glass-card p-4 p-md-5">
+        
+        <div class="text-center mb-4">
+            <i class="bi bi-scissors fs-1 text-accent mb-2"></i>
+            <h2 id="titulo-salao" class="fw-bold mb-1">Carregando...</h2>
+            <p class="text-muted small"><i class="bi bi-whatsapp"></i> <span id="telefone-salao"></span></p>
+        </div>
+        
+        <div id="etapa-servicos">
+            <h6 class="mb-3 text-muted text-uppercase text-center small tracking-wide">1. Selecione o Serviço</h6>
+            <div id="lista-servicos" class="d-grid gap-3"></div>
+        </div>
+
+        <div id="etapa-data-hora" style="display: none;">
+            <div class="p-3 bg-dark rounded-3 border border-secondary mb-4 text-center">
+                <span class="text-accent small text-uppercase">Serviço Escolhido</span><br>
+                <strong id="servico-escolhido" class="fs-5"></strong>
+            </div>
+            
+            <h6 class="mb-3 text-muted text-uppercase small text-center">2. Escolha a Data</h6>
+            <input type="date" id="input-data" class="form-control form-control-lg mb-4 text-center" onchange="buscarHorarios()">
+            
+            <h6 class="mb-3 text-muted text-uppercase small text-center">3. Horários Livres</h6>
+            <div id="lista-horarios" class="d-flex flex-wrap gap-2 justify-content-center">
+                <p class="text-muted small text-center w-100"><i class="bi bi-calendar3"></i> Selecione uma data acima.</p>
+            </div>
+        </div>
+
+        <div id="etapa-dados" style="display: none;">
+            <div class="p-3 bg-dark rounded-3 border border-secondary mb-4 text-center">
+                <span class="text-accent small text-uppercase">Seu Horário</span><br>
+                <strong id="resumo-agendamento" class="fs-5"></strong>
+            </div>
+
+            <h6 class="mb-3 text-muted text-uppercase small text-center">4. Confirme seus Dados</h6>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-person"></i></span>
+                <input type="text" id="input-nome" class="form-control" placeholder="Seu Nome Completo">
+            </div>
+            
+            <div class="input-group mb-4">
+                <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-whatsapp"></i></span>
+                <input type="tel" id="input-whatsapp" class="form-control" placeholder="DDD + Número">
+            </div>
+
+            <button class="btn btn-action w-100 fw-bold py-3 fs-5" onclick="gerarPix()" id="btn-pagar">
+                <i class="bi bi-qr-code-scan me-2"></i> Pagar e Agendar
+            </button>
+        </div>
+
+        <div id="etapa-pix" style="display: none;" class="text-center">
+            <i class="bi bi-check-circle-fill text-success fs-1 mb-2"></i>
+            <h4 class="fw-bold mb-3">Quase lá!</h4>
+            <p class="text-muted small mb-4">Abra o app do seu banco, escolha <strong>PIX Copia e Cola</strong> ou escaneie o código abaixo:</p>
+            
+            <img id="img-qrcode" src="" alt="QR Code PIX" class="img-fluid mb-4 p-3 shadow-sm" style="max-width: 220px;">
+            
+            <div class="input-group mb-3">
+                <input type="text" id="texto-copia-cola" class="form-control text-muted" readonly>
+                <button class="btn btn-outline-light" onclick="copiarPix()" type="button"><i class="bi bi-copy"></i> Copiar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let idSalaoAtual = 1; 
+    const slugDoSalao = "barbearia-teste";
+    let idServicoAtual = 0;
+    let dataHoraEscolhida = "";
+
+    async function carregarDadosDoSalao() {
+        try {
+            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/salao/${slugDoSalao}`);
+            const dados = await resposta.json();
+            
+            document.getElementById('titulo-salao').innerText = dados.nome_salao;
+            document.getElementById('telefone-salao').innerText = dados.telefone;
+            idSalaoAtual = dados.id;
+
+            const divServicos = document.getElementById('lista-servicos');
+            divServicos.innerHTML = ""; 
+            
+            if (dados.servicos && dados.servicos.length > 0) {
+                dados.servicos.forEach(servico => {
+                    const botao = document.createElement('button');
+                    botao.className = "btn btn-custom py-3 fw-bold d-flex justify-content-between align-items-center px-4";
+                    botao.innerHTML = `<span>${servico.nome_servico}</span> <span class="text-accent">R$ ${servico.preco.toFixed(2)}</span>`;
+                    
+                    botao.onclick = () => {
+                        idServicoAtual = servico.id;
+                        document.getElementById('etapa-servicos').style.display = 'none';
+                        document.getElementById('etapa-data-hora').style.display = 'block';
+                        document.getElementById('servico-escolhido').innerText = servico.nome_servico;
+                    };
+                    
+                    divServicos.appendChild(botao);
+                });
+            }
+        } catch (erro) {
+            console.error(erro);
+        }
+    }
+
+    async function buscarHorarios() {
+        const dataEscolhida = document.getElementById('input-data').value;
+        if (!dataEscolhida) return;
+
+        const divHorarios = document.getElementById('lista-horarios');
+        divHorarios.innerHTML = '<div class="spinner-border text-accent spinner-border-sm" role="status"></div>';
+
+        try {
+            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/horarios/${idSalaoAtual}/${dataEscolhida}`);
+            const dados = await resposta.json();
+
+            divHorarios.innerHTML = "";
+
+            if (dados.horarios_disponiveis.length === 0) {
+                divHorarios.innerHTML = "<p class='text-danger small'><i class='bi bi-x-circle'></i> Agenda lotada neste dia.</p>";
+                return;
+            }
+
+            dados.horarios_disponiveis.forEach(hora => {
+                const botaoHora = document.createElement('button');
+                botaoHora.className = "btn horario-btn px-4 py-2 fw-bold";
+                botaoHora.innerText = hora;
+                
+                botaoHora.onclick = () => {
+                    dataHoraEscolhida = `${dataEscolhida} ${hora}`;
+                    document.getElementById('etapa-data-hora').style.display = 'none';
+                    document.getElementById('etapa-dados').style.display = 'block';
+                    
+                    const dataFormatada = dataEscolhida.split('-').reverse().join('/');
+                    document.getElementById('resumo-agendamento').innerText = `${dataFormatada} às ${hora}`;
+                };
+
+                divHorarios.appendChild(botaoHora);
+            });
+        } catch (erro) {
+            console.error(erro);
+        }
+    }
+
+    async function gerarPix() {
+        const nome = document.getElementById('input-nome').value;
+        const whatsapp = document.getElementById('input-whatsapp').value;
+        const botaoPagar = document.getElementById('btn-pagar');
+
+        if(!nome || !whatsapp) {
+            alert("Por favor, preencha seu nome e WhatsApp!");
+            return;
+        }
+
+        botaoPagar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
+        botaoPagar.disabled = true;
+
+        const pacoteDeDados = {
+            id_salao: idSalaoAtual,
+            nome_cliente: nome,
+            whatsapp: whatsapp,
+            data_hora: dataHoraEscolhida,
+            id_servico: idServicoAtual
+        };
+
+        try {
+            const resposta = await fetch('https://meu-saas-barbearia.onrender.com/gerar-pix', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacoteDeDados)
+            });
+
+            const dadosPix = await resposta.json();
+
+            if (dadosPix.sucesso) {
+                document.getElementById('etapa-dados').style.display = 'none';
+                document.getElementById('etapa-pix').style.display = 'block';
+
+                document.getElementById('img-qrcode').src = `data:image/png;base64,${dadosPix.qr_code_base64}`;
+                document.getElementById('texto-copia-cola').value = dadosPix.copia_cola;
+            } else {
+                alert("Erro ao gerar o PIX. Tente novamente.");
+                resetarBotao();
+            }
+        } catch (erro) {
+            console.error(erro);
+            alert("Erro de conexão.");
+            resetarBotao();
+        }
+    }
+
+    function resetarBotao() {
+        const botaoPagar = document.getElementById('btn-pagar');
+        botaoPagar.innerHTML = '<i class="bi bi-qr-code-scan me-2"></i> Pagar e Agendar';
+        botaoPagar.disabled = false;
+    }
+
+    function copiarPix() {
+        const texto = document.getElementById('texto-copia-cola');
+        texto.select();
+        document.execCommand('copy');
+        alert("Código PIX copiado com sucesso!");
+    }
+
+    carregarDadosDoSalao();
+</script>
+
+</body>
+</html>
