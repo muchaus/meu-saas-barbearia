@@ -148,7 +148,7 @@
         const corpoTabela = document.getElementById('tabela-agendamentos');
         
         try {
-            const resposta = await fetch(`http://127.0.0.1:8000/admin/agendamentos/${idSalaoAdmin}`);
+            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/admin/agendamentos/${idSalaoAdmin}`);
             const dados = await resposta.json();
             
             corpoTabela.innerHTML = ""; 
@@ -217,7 +217,7 @@
         if(!confirm("Confirmar recebimento do pagamento manual e baixar agendamento?")) return;
 
         try {
-            const resposta = await fetch(`http://127.0.0.1:8000/admin/agendamentos/${idAgendamento}/pago`, {
+            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/admin/agendamentos/${idAgendamento}/pago`, {
                 method: 'PUT'
             });
             const dados = await resposta.json();
