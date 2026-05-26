@@ -58,6 +58,36 @@ def ver_salao(slug: str):
     conexao.close()
     return {"erro": "Salão não encontrado"}
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import sqlite3
+
+app = FastAPI()
+
+# Permite acesso do seu site Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+conn = sqlite3.connect('banco_saas.db', check_same_thread=False)
+cursor = conn.cursor()
+
+# Rota de Cancelamento
+@app.post("/cancelar-agendamento/{id_agendamento}")
+async def cancelar_agendamento(id_agendamento: int):
+    try:
+        # Marca como inativo (ativo = 0)
+        cursor.execute("UPDATE Agendamentos SET ativo = 0 WHERE id = ?", (id_agendamento,))
+        conn.commit()
+        return {"status": "sucesso"}
+    except Exception as e:
+        return {"status": "erro", "detalhe": str(e)}
+
+# Mantenha aqui as suas outras rotas (salao, horarios, gerar-pix, etc.)
+
 # ==========================================
 # ROTA 3: Consulta horários disponíveis no dia
 # ==========================================

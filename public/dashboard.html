@@ -225,7 +225,25 @@
         } catch (erro) {
             alert("Erro técnico ao tentar atualizar o status.");
         }
+    }// Função JavaScript para incluir no seu dashboard.html
+async function cancelarAgendamento(id) {
+    if (!confirm("Deseja cancelar este agendamento?")) return;
+
+    const res = await fetch(`https://meu-saas-barbearia.onrender.com/cancelar-agendamento/${id}`, {
+        method: 'POST'
+    });
+    
+    if ((await res.json()).status === "sucesso") {
+        alert("Cancelado com sucesso!");
+        location.reload(); // Recarrega a página
+    } else {
+        alert("Erro ao cancelar.");
     }
+}
+
+// Quando você estiver exibindo a lista de agendamentos no dashboard:
+// Adicione este botão dentro do loop que cria os cards:
+// `<button onclick="cancelarAgendamento(${agendamento.id})" class="btn btn-danger btn-sm">Cancelar</button>`
 
     // Inicializa a tela consumindo a API
     carregarDashboard();
