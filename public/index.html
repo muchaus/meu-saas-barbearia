@@ -3,114 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento Premium</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Agendamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <style>
-    /* 1. Força TUDO para branco, sem exceção */
-    * {
-        color: #ffffff !important;
-    }
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c96b;
+            --gold-dim: rgba(201,168,76,0.15);
+            --bg: #0d0d0d;
+            --surface: #161616;
+            --surface2: #1f1f1f;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0ece4;
+            --muted: #7a7570;
+        }
 
-    /* 2. Remove o desbotado do Bootstrap */
-    .text-muted {
-        color: #ffffff !important;
-        opacity: 0.9;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #121212;
-        color: #ffffff !important;
-    }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-    /* 3. Ajuste nos seus cards */
-    .glass-card {
-        background: #1e1e1e;
-        border-radius: 20px;
-        border: 1px solid #333;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+        /* Fundo decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -200px;
+            left: -200px;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
 
-    /* 4. Ajuste dos inputs */
-    .form-control {
-        background-color: #2c2c2c !important;
-        border: 1px solid #444 !important;
-        color: #ffffff !important;
-    }
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            animation: fadeUp 0.5s ease both;
+        }
 
-    /* 5. Ícones e Destaques */
-    .text-accent {
-        color: #e0a800 !important;
-    }
-</style>
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .card-header {
+            padding: 36px 32px 28px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--gold);
+            margin: 0 auto 16px;
+        }
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .card-header p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* Steps indicator */
+        .steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--muted);
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .step-dot.active {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .step-dot.done {
+            border-color: var(--gold);
+            background: var(--gold);
+            color: #0d0d0d;
+        }
+        .step-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            max-width: 40px;
+            transition: background 0.3s;
+        }
+        .step-line.done { background: var(--gold); }
+
+        /* Body */
+        .card-body {
+            padding: 28px 32px 32px;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        /* Serviços */
+        .servico-btn {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .servico-btn:hover {
+            border-color: rgba(201,168,76,0.4);
+            background: rgba(201,168,76,0.05);
+            transform: translateX(4px);
+        }
+        .servico-btn .preco {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1rem;
+        }
+        .servico-btn .arrow {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-left: 12px;
+            transition: transform 0.2s;
+        }
+        .servico-btn:hover .arrow { transform: translateX(3px); color: var(--gold); }
+
+        /* Chip de resumo */
+        .resumo-chip {
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .resumo-chip i { color: var(--gold); font-size: 1rem; }
+        .resumo-chip span { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+
+        /* Input de data */
+        .input-data {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            outline: none;
+            transition: border-color 0.2s;
+            color-scheme: dark;
+        }
+        .input-data:focus { border-color: rgba(201,168,76,0.5); }
+
+        /* Horários */
+        .horarios-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .horario-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .horario-btn:hover {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+
+        /* Inputs de texto */
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            transition: border-color 0.2s;
+            overflow: hidden;
+        }
+        .input-group:focus-within { border-color: rgba(201,168,76,0.5); }
+        .input-icon {
+            padding: 0 14px;
+            color: var(--muted);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 14px 14px 14px 0;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+        }
+        .input-field::placeholder { color: var(--muted); }
+
+        /* Botão principal */
+        .btn-primary {
+            width: 100%;
+            background: var(--gold);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: #0d0d0d;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Etapa PIX */
+        .pix-success {
+            text-align: center;
+        }
+        .pix-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #22c55e;
+            margin: 0 auto 16px;
+        }
+        .pix-success h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .pix-success p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .qr-wrap {
+            background: #fff;
+            border-radius: 16px;
+            padding: 12px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .qr-wrap img { display: block; width: 180px; height: 180px; }
+        .copia-cola-wrap {
+            display: flex;
+            gap: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px 4px 4px 14px;
+            align-items: center;
+        }
+        .copia-cola-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-copy {
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--gold);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            font-family: 'DM Sans', sans-serif;
+            transition: background 0.2s;
+        }
+        .btn-copy:hover { background: rgba(201,168,76,0.25); }
+
+        /* Loading */
+        .loading-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            padding: 16px 0;
+        }
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Etapa oculta */
+        .etapa { display: none; animation: fadeUp 0.3s ease both; }
+        .etapa.ativa { display: block; }
+
+        /* Voltar */
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 0.82rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            font-family: 'DM Sans', sans-serif;
+            transition: color 0.2s;
+            padding: 0;
+        }
+        .btn-back:hover { color: var(--text); }
+
+        /* Empty/error states */
+        .estado-vazio {
+            text-align: center;
+            padding: 24px 0 8px;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        .estado-vazio i { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+    </style>
 </head>
 <body>
 
-<div class="container app-container">
-    <div class="glass-card p-4 p-md-5">
-        
-        <div class="text-center mb-4">
-            <i class="bi bi-scissors fs-1 text-accent mb-2"></i>
-            <h2 id="titulo-salao" class="fw-bold mb-1">Carregando...</h2>
-            <p class="text-muted small"><i class="bi bi-whatsapp"></i> <span id="telefone-salao"></span></p>
-        </div>
-        
-        <div id="etapa-servicos">
-            <h6 class="mb-3 text-muted text-uppercase text-center small tracking-wide">1. Selecione o Serviço</h6>
-            <div id="lista-servicos" class="d-grid gap-3"></div>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <div class="brand-icon"><i class="bi bi-scissors"></i></div>
+        <h1 id="titulo-salao">Carregando...</h1>
+        <p><i class="bi bi-whatsapp"></i> <span id="telefone-salao">—</span></p>
+    </div>
 
-        <div id="etapa-data-hora" style="display: none;">
-            <div class="p-3 bg-dark rounded-3 border border-secondary mb-4 text-center">
-                <span class="text-accent small text-uppercase">Serviço Escolhido</span><br>
-                <strong id="servico-escolhido" class="fs-5"></strong>
-            </div>
-            
-            <h6 class="mb-3 text-muted text-uppercase small text-center">2. Escolha a Data</h6>
-            <input type="date" id="input-data" class="form-control form-control-lg mb-4 text-center" onchange="buscarHorarios()">
-            
-            <h6 class="mb-3 text-muted text-uppercase small text-center">3. Horários Livres</h6>
-            <div id="lista-horarios" class="d-flex flex-wrap gap-2 justify-content-center">
-                <p class="text-muted small text-center w-100"><i class="bi bi-calendar3"></i> Selecione uma data acima.</p>
+    <div class="steps" id="steps-bar">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step-dot" id="dot-3">3</div>
+        <div class="step-line" id="line-3"></div>
+        <div class="step-dot" id="dot-4">4</div>
+    </div>
+
+    <div class="card-body">
+
+        <!-- ETAPA 1: Serviços -->
+        <div class="etapa ativa" id="etapa-servicos">
+            <p class="section-label">Escolha o serviço</p>
+            <div id="lista-servicos">
+                <div class="loading-row"><div class="spinner"></div> Carregando serviços...</div>
             </div>
         </div>
 
-        <div id="etapa-dados" style="display: none;">
-            <div class="p-3 bg-dark rounded-3 border border-secondary mb-4 text-center">
-                <span class="text-accent small text-uppercase">Seu Horário</span><br>
-                <strong id="resumo-agendamento" class="fs-5"></strong>
+        <!-- ETAPA 2: Data e hora -->
+        <div class="etapa" id="etapa-data-hora">
+            <button class="btn-back" onclick="voltarPara('etapa-servicos', 1)">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            <div class="resumo-chip">
+                <i class="bi bi-scissors"></i>
+                <span id="servico-escolhido"></span>
             </div>
+            <p class="section-label">Escolha a data</p>
+            <input type="date" id="input-data" class="input-data" onchange="buscarHorarios()">
+            <p class="section-label">Horários disponíveis</p>
+            <div id="lista-horarios">
+                <div class="estado-vazio"><i class="bi bi-calendar3"></i>Selecione uma data acima</div>
+            </div>
+        </div>
 
-            <h6 class="mb-3 text-muted text-uppercase small text-center">4. Confirme seus Dados</h6>
-            <div class="input-group mb-3">
-                <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-person"></i></span>
-                <input type="text" id="input-nome" class="form-control" placeholder="Seu Nome Completo">
+        <!-- ETAPA 3: Dados do cliente -->
+        <div class="etapa" id="etapa-dados">
+            <button class="btn-back" onclick="voltarPara('etapa-data-hora', 2)">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            <div class="resumo-chip">
+                <i class="bi bi-clock"></i>
+                <span id="resumo-agendamento"></span>
             </div>
-            
-            <div class="input-group mb-4">
-                <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-whatsapp"></i></span>
-                <input type="tel" id="input-whatsapp" class="form-control" placeholder="DDD + Número">
+            <p class="section-label">Seus dados</p>
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-person"></i></span>
+                <input type="text" id="input-nome" class="input-field" placeholder="Nome completo">
             </div>
-
-            <button class="btn btn-action w-100 fw-bold py-3 fs-5" onclick="gerarPix()" id="btn-pagar">
-                <i class="bi bi-qr-code-scan me-2"></i> Pagar e Agendar
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-whatsapp"></i></span>
+                <input type="tel" id="input-whatsapp" class="input-field" placeholder="DDD + Número">
+            </div>
+            <button class="btn-primary" onclick="gerarPix()" id="btn-pagar">
+                <i class="bi bi-qr-code-scan"></i> Gerar PIX e Agendar
             </button>
         </div>
 
-        <div id="etapa-pix" style="display: none;" class="text-center">
-            <i class="bi bi-check-circle-fill text-success fs-1 mb-2"></i>
-            <h4 class="fw-bold mb-3">Quase lá!</h4>
-            <p class="text-muted small mb-4">Abra o app do seu banco, escolha <strong>PIX Copia e Cola</strong> ou escaneie o código abaixo:</p>
-            
-            <img id="img-qrcode" src="" alt="QR Code PIX" class="img-fluid mb-4 p-3 shadow-sm" style="max-width: 220px;">
-            
-            <div class="input-group mb-3">
-                <input type="text" id="texto-copia-cola" class="form-control text-muted" readonly>
-                <button class="btn btn-outline-light" onclick="copiarPix()" type="button"><i class="bi bi-copy"></i> Copiar</button>
+        <!-- ETAPA 4: PIX -->
+        <div class="etapa" id="etapa-pix">
+            <div class="pix-success">
+                <div class="pix-icon"><i class="bi bi-check-lg"></i></div>
+                <h3>Quase pronto!</h3>
+                <p>Abra seu banco e pague via <strong style="color:var(--text)">PIX Copia e Cola</strong> ou escaneie o QR Code abaixo para confirmar seu agendamento.</p>
+                <div class="qr-wrap">
+                    <img id="img-qrcode" src="" alt="QR Code PIX">
+                </div>
+                <div class="copia-cola-wrap">
+                    <input type="text" id="texto-copia-cola" class="copia-cola-input" readonly>
+                    <button class="btn-copy" onclick="copiarPix()">
+                        <i class="bi bi-copy"></i> Copiar
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -118,145 +534,135 @@
 </div>
 
 <script>
-    let idSalaoAtual = 1; 
+    let idSalaoAtual = 1;
     const slugDoSalao = "barbearia-teste";
     let idServicoAtual = 0;
     let dataHoraEscolhida = "";
+
+    function setEtapa(id, stepNum) {
+        document.querySelectorAll('.etapa').forEach(e => e.classList.remove('ativa'));
+        document.getElementById(id).classList.add('ativa');
+        for (let i = 1; i <= 4; i++) {
+            const dot = document.getElementById(`dot-${i}`);
+            dot.classList.remove('active', 'done');
+            if (i < stepNum) dot.classList.add('done'), dot.innerHTML = '<i class="bi bi-check" style="font-size:0.7rem"></i>';
+            else if (i === stepNum) dot.classList.add('active'), dot.innerText = i;
+            else dot.innerText = i;
+        }
+        for (let i = 1; i <= 3; i++) {
+            const line = document.getElementById(`line-${i}`);
+            line.classList.toggle('done', i < stepNum);
+        }
+    }
+
+    function voltarPara(etapa, step) {
+        setEtapa(etapa, step);
+    }
 
     async function carregarDadosDoSalao() {
         try {
             const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/salao/${slugDoSalao}`);
             const dados = await resposta.json();
-            
             document.getElementById('titulo-salao').innerText = dados.nome_salao;
             document.getElementById('telefone-salao').innerText = dados.telefone;
             idSalaoAtual = dados.id;
-
             const divServicos = document.getElementById('lista-servicos');
-            divServicos.innerHTML = ""; 
-            
+            divServicos.innerHTML = "";
             if (dados.servicos && dados.servicos.length > 0) {
                 dados.servicos.forEach(servico => {
-                    const botao = document.createElement('button');
-                    botao.className = "btn btn-custom py-3 fw-bold d-flex justify-content-between align-items-center px-4";
-                    botao.innerHTML = `<span>${servico.nome_servico}</span> <span class="text-accent">R$ ${servico.preco.toFixed(2)}</span>`;
-                    
-                    botao.onclick = () => {
+                    const btn = document.createElement('button');
+                    btn.className = "servico-btn";
+                    btn.innerHTML = `<span>${servico.nome_servico}</span><div style="display:flex;align-items:center;gap:8px"><span class="preco">R$ ${servico.preco.toFixed(2)}</span><i class="bi bi-arrow-right arrow"></i></div>`;
+                    btn.onclick = () => {
                         idServicoAtual = servico.id;
-                        document.getElementById('etapa-servicos').style.display = 'none';
-                        document.getElementById('etapa-data-hora').style.display = 'block';
                         document.getElementById('servico-escolhido').innerText = servico.nome_servico;
+                        setEtapa('etapa-data-hora', 2);
                     };
-                    
-                    divServicos.appendChild(botao);
+                    divServicos.appendChild(btn);
                 });
             }
-        } catch (erro) {
-            console.error(erro);
+        } catch (e) {
+            document.getElementById('lista-servicos').innerHTML = '<div class="estado-vazio"><i class="bi bi-wifi-off"></i>Erro ao carregar. Tente novamente.</div>';
         }
     }
 
     async function buscarHorarios() {
-        const dataEscolhida = document.getElementById('input-data').value;
-        if (!dataEscolhida) return;
-
-        const divHorarios = document.getElementById('lista-horarios');
-        divHorarios.innerHTML = '<div class="spinner-border text-accent spinner-border-sm" role="status"></div>';
-
+        const data = document.getElementById('input-data').value;
+        if (!data) return;
+        const div = document.getElementById('lista-horarios');
+        div.innerHTML = '<div class="loading-row"><div class="spinner"></div> Buscando horários...</div>';
         try {
-            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/horarios/${idSalaoAtual}/${dataEscolhida}`);
+            const resposta = await fetch(`https://meu-saas-barbearia.onrender.com/horarios/${idSalaoAtual}/${data}`);
             const dados = await resposta.json();
-
-            divHorarios.innerHTML = "";
-
+            div.innerHTML = "";
             if (dados.horarios_disponiveis.length === 0) {
-                divHorarios.innerHTML = "<p class='text-danger small'><i class='bi bi-x-circle'></i> Agenda lotada neste dia.</p>";
+                div.innerHTML = '<div class="estado-vazio"><i class="bi bi-calendar-x"></i>Agenda lotada neste dia</div>';
                 return;
             }
-
+            const grid = document.createElement('div');
+            grid.className = "horarios-grid";
             dados.horarios_disponiveis.forEach(hora => {
-                const botaoHora = document.createElement('button');
-                botaoHora.className = "btn horario-btn px-4 py-2 fw-bold";
-                botaoHora.innerText = hora;
-                
-                botaoHora.onclick = () => {
-                    dataHoraEscolhida = `${dataEscolhida} ${hora}`;
-                    document.getElementById('etapa-data-hora').style.display = 'none';
-                    document.getElementById('etapa-dados').style.display = 'block';
-                    
-                    const dataFormatada = dataEscolhida.split('-').reverse().join('/');
-                    document.getElementById('resumo-agendamento').innerText = `${dataFormatada} às ${hora}`;
+                const btn = document.createElement('button');
+                btn.className = "horario-btn";
+                btn.innerText = hora;
+                btn.onclick = () => {
+                    dataHoraEscolhida = `${data} ${hora}`;
+                    const dataFmt = data.split('-').reverse().join('/');
+                    document.getElementById('resumo-agendamento').innerText = `${dataFmt} às ${hora}`;
+                    setEtapa('etapa-dados', 3);
                 };
-
-                divHorarios.appendChild(botaoHora);
+                grid.appendChild(btn);
             });
-        } catch (erro) {
-            console.error(erro);
+            div.appendChild(grid);
+        } catch (e) {
+            div.innerHTML = '<div class="estado-vazio"><i class="bi bi-wifi-off"></i>Erro ao carregar horários</div>';
         }
     }
 
     async function gerarPix() {
-        const nome = document.getElementById('input-nome').value;
-        const whatsapp = document.getElementById('input-whatsapp').value;
-        const botaoPagar = document.getElementById('btn-pagar');
-
-        if(!nome || !whatsapp) {
-            alert("Por favor, preencha seu nome e WhatsApp!");
-            return;
-        }
-
-        botaoPagar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
-        botaoPagar.disabled = true;
-
-        const pacoteDeDados = {
-            id_salao: idSalaoAtual,
-            nome_cliente: nome,
-            whatsapp: whatsapp,
-            data_hora: dataHoraEscolhida,
-            id_servico: idServicoAtual
-        };
-
+        const nome = document.getElementById('input-nome').value.trim();
+        const whatsapp = document.getElementById('input-whatsapp').value.trim();
+        const btn = document.getElementById('btn-pagar');
+        if (!nome || !whatsapp) { alert("Preencha seu nome e WhatsApp!"); return; }
+        btn.innerHTML = '<div class="spinner" style="border-top-color:#0d0d0d;border-color:rgba(0,0,0,0.2);border-top-color:#0d0d0d"></div> Processando...';
+        btn.disabled = true;
         try {
             const resposta = await fetch('https://meu-saas-barbearia.onrender.com/gerar-pix', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(pacoteDeDados)
+                body: JSON.stringify({ id_salao: idSalaoAtual, nome_cliente: nome, whatsapp, data_hora: dataHoraEscolhida, id_servico: idServicoAtual })
             });
-
-            const dadosPix = await resposta.json();
-
-            if (dadosPix.sucesso) {
-                document.getElementById('etapa-dados').style.display = 'none';
-                document.getElementById('etapa-pix').style.display = 'block';
-
-                document.getElementById('img-qrcode').src = `data:image/png;base64,${dadosPix.qr_code_base64}`;
-                document.getElementById('texto-copia-cola').value = dadosPix.copia_cola;
+            const pix = await resposta.json();
+            if (pix.sucesso) {
+                document.getElementById('img-qrcode').src = `data:image/png;base64,${pix.qr_code_base64}`;
+                document.getElementById('texto-copia-cola').value = pix.copia_cola;
+                setEtapa('etapa-pix', 4);
             } else {
                 alert("Erro ao gerar o PIX. Tente novamente.");
                 resetarBotao();
             }
-        } catch (erro) {
-            console.error(erro);
+        } catch (e) {
             alert("Erro de conexão.");
             resetarBotao();
         }
     }
 
     function resetarBotao() {
-        const botaoPagar = document.getElementById('btn-pagar');
-        botaoPagar.innerHTML = '<i class="bi bi-qr-code-scan me-2"></i> Pagar e Agendar';
-        botaoPagar.disabled = false;
+        const btn = document.getElementById('btn-pagar');
+        btn.innerHTML = '<i class="bi bi-qr-code-scan"></i> Gerar PIX e Agendar';
+        btn.disabled = false;
     }
 
     function copiarPix() {
         const texto = document.getElementById('texto-copia-cola');
         texto.select();
-        document.execCommand('copy');
-        alert("Código PIX copiado com sucesso!");
+        navigator.clipboard.writeText(texto.value).catch(() => document.execCommand('copy'));
+        const btn = document.querySelector('.btn-copy');
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copiado!';
+        setTimeout(() => btn.innerHTML = '<i class="bi bi-copy"></i> Copiar', 2000);
     }
 
     carregarDadosDoSalao();
 </script>
-
 </body>
 </html>
