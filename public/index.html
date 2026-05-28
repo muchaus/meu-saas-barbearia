@@ -535,7 +535,11 @@
 
 <script>
     let idSalaoAtual = 1;
-    const slugDoSalao = "barbearia-teste";
+
+// Lógica inteligente para ler a URL:
+const urlParams = new URLSearchParams(window.location.search);
+// Tenta apanhar o salão da URL. Se não tiver nenhum, abre o salão padrão.
+const slugDoSalao = urlParams.get('salao') || "barbearia-teste";
     let idServicoAtual = 0;
     let dataHoraEscolhida = "";
 
