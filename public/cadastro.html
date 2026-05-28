@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Parceiro | Sistema de Agendamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c96b;
+            --gold-dim: rgba(201,168,76,0.15);
+            --bg: #0d0d0d;
+            --surface: #161616;
+            --surface2: #1f1f1f;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0ece4;
+            --muted: #7a7570;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            padding: 36px 32px 28px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--gold);
+            margin: 0 auto 16px;
+        }
+
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .card-body {
+            padding: 28px 32px 32px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+            overflow: hidden;
+        }
+
+        .input-group:focus-within { border-color: rgba(201,168,76,0.5); }
+
+        .input-icon {
+            padding: 0 14px;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 14px 14px 14px 0;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--gold);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: #0d0d0d;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-primary:hover { background: var(--gold-light); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Tela de Sucesso */
+        #sucesso-cadastro {
+            display: none;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #22c55e;
+            margin: 0 auto 16px;
+        }
+
+        .link-box {
+            display: flex;
+            gap: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 8px 8px 14px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .link-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .btn-copy {
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-header">
+        <div class="brand-icon"><i class="bi bi-rocket-takeoff"></i></div>
+        <h1>Criar Conta</h1>
+        <p>Automatize seus agendamentos e receba no PIX</p>
+    </div>
+
+    <div class="card-body">
+        <form id="form-cadastro" onsubmit="cadastrarSalao(event)">
+            <p class="section-label">Dados do Negócio</p>
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-shop"></i></span>
+                <input type="text" id="nome_salao" class="input-field" placeholder="Nome do Salão/Estúdio" required>
+            </div>
+
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-whatsapp"></i></span>
+                <input type="tel" id="telefone" class="input-field" placeholder="WhatsApp (DDD + Número)" required>
+            </div>
+
+            <p class="section-label" style="margin-top: 24px;">Pagamentos (Mercado Pago)</p>
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-key"></i></span>
+                <input type="text" id="mp_token" class="input-field" placeholder="Access Token de Produção" required>
+            </div>
+            
+            <button type="submit" class="btn-primary" id="btn-submit">
+                <i class="bi bi-check2-circle"></i> Criar minha conta
+            </button>
+        </form>
+
+        <div id="sucesso-cadastro">
+            <div class="success-icon"><i class="bi bi-check-lg"></i></div>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 8px;">Tudo pronto!</h2>
+            <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.5;">
+                Seu sistema já está no ar. Copie o link abaixo e coloque na bio do seu Instagram para seus clientes agendarem.
+            </p>
+
+            <div class="link-box">
+                <input type="text" id="link-gerado" class="link-input" readonly>
+                <button type="button" class="btn-copy" onclick="copiarLink()">
+                    <i class="bi bi-copy"></i> Copiar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function cadastrarSalao(event) {
+        event.preventDefault(); // Impede a página de recarregar
+        
+        const btn = document.getElementById('btn-submit');
+        btn.innerHTML = 'Criando conta...';
+        btn.disabled = true;
+
+        const dados = {
+            nome_salao: document.getElementById('nome_salao').value,
+            telefone: document.getElementById('telefone').value,
+            mp_access_token: document.getElementById('mp_token').value
+        };
+
+        try {
+            const resposta = await fetch('https://meu-saas-barbearia.onrender.com/cadastrar-estabelecimento', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                // Esconde o form e mostra a tela de sucesso
+                document.getElementById('form-cadastro').style.display = 'none';
+                document.getElementById('sucesso-cadastro').style.display = 'block';
+                document.getElementById('link-gerado').value = resultado.link_do_cliente;
+            } else {
+                alert("Erro ao criar conta: " + resultado.erro);
+                btn.innerHTML = '<i class="bi bi-check2-circle"></i> Criar minha conta';
+                btn.disabled = false;
+            }
+        } catch (erro) {
+            alert("Erro de conexão com o servidor.");
+            btn.innerHTML = '<i class="bi bi-check2-circle"></i> Criar minha conta';
+            btn.disabled = false;
+        }
+    }
+
+    function copiarLink() {
+        const texto = document.getElementById('link-gerado');
+        texto.select();
+        navigator.clipboard.writeText(texto.value).catch(() => document.execCommand('copy'));
+        
+        const btn = document.querySelector('.btn-copy');
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copiado!';
+        setTimeout(() => btn.innerHTML = '<i class="bi bi-copy"></i> Copiar', 2000);
+    }
+</script>
+</body>
+</html>
